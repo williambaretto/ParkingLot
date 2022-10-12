@@ -1,3 +1,5 @@
+package main.java;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,6 @@ public class ParkingLotApplication {
                     break;
                 case "leave":
                     String regNo = getRegistrationNo(inpCommand);
-
                     Optional<ParkingSlot> slot = parking.getParkingSlots().stream().filter(e -> regNo.equals(e.getRegistrationNumber())).findFirst();
                     if (slot.isPresent()) {
                         slot.get().setRegistrationNumber(null);
@@ -29,7 +30,6 @@ public class ParkingLotApplication {
                         System.out.println("Registration Number " + regNo + " from Slot " + slot.get().getSlotNumber() + " has left with Charge " + charge);
                     }
                 break;
-
                 case "park":
                     if (parking.getSlotsRemaining() == 0) {
                         System.out.println("Sorry, parking lot is full");
@@ -49,7 +49,7 @@ public class ParkingLotApplication {
                         System.out.println(e.getSlotNumber() + "            " + e.getRegistrationNumber());
                     });
                   break;
-                case "default":
+                default:
                     System.out.println("invalid input");
                     break;
             }
@@ -80,10 +80,10 @@ public class ParkingLotApplication {
         return cmd.split(" ")[0];
     }
 
-    private static List<String> getAllCommands() {
+    public static List<String> getAllCommands() {
 
         List<String> commandList = new ArrayList<>();
-        File file1 = new File("src/input.txt");
+        File file1 = new File("src/main/java/input.txt");
         StringBuilder builder = new StringBuilder();
 
         try (BufferedReader buffer = new BufferedReader(
@@ -97,9 +97,6 @@ public class ParkingLotApplication {
             e.printStackTrace();
         }
         return commandList;
-
     }
-
-
 }
 
