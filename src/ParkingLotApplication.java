@@ -6,7 +6,6 @@ import java.util.Optional;
 public class ParkingLotApplication {
 
     public static void main(String[] args) {
-
         List<String> commandList = getAllCommands();
         Parking parking = null;
         for (String inpCommand : commandList) {
@@ -20,7 +19,8 @@ public class ParkingLotApplication {
                     break;
                 case "leave":
                     String regNo = getRegistrationNo(inpCommand);
-                    Optional<ParkingSlot> slot = parking.getParkingSlots().stream().filter(e -> e.getRegistrationNumber().equals(regNo)).findFirst();
+
+                    Optional<ParkingSlot> slot = parking.getParkingSlots().stream().filter(e -> regNo.equals(e.getRegistrationNumber())).findFirst();
                     if (slot.isPresent()) {
                         slot.get().setRegistrationNumber(null);
                         slot.get().setOccupied(false);
@@ -28,6 +28,7 @@ public class ParkingLotApplication {
                         int charge = calculateCharge(getHours(inpCommand));
                         System.out.println("Registration Number " + regNo + " from Slot " + slot.get().getSlotNumber() + " has left with Charge " + charge);
                     }
+                break;
 
                 case "park":
                     if (parking.getSlotsRemaining() == 0) {
@@ -44,9 +45,13 @@ public class ParkingLotApplication {
                     break;
                 case "status":
                     System.out.println("Slot No." + "     Registration No.");
-                    parking.getParkingSlots().stream().forEach(e -> {
+                    parking.getParkingSlots().stream().filter(e->e.getRegistrationNumber() != null).forEach(e -> {
                         System.out.println(e.getSlotNumber() + "            " + e.getRegistrationNumber());
                     });
+                  break;
+                case "default":
+                    System.out.println("invalid input");
+                    break;
             }
         }
     }
@@ -78,37 +83,17 @@ public class ParkingLotApplication {
     private static List<String> getAllCommands() {
 
         List<String> commandList = new ArrayList<>();
-        // Passing the path to the file as a parameter
         File file1 = new File("src/input.txt");
-        // Declaring object of StringBuilder class
         StringBuilder builder = new StringBuilder();
 
-        // try block to check for exceptions where
-        // object of BufferedReader class us created
-        // to read filepath
         try (BufferedReader buffer = new BufferedReader(
                 new FileReader(file1))) {
-
             String str;
-
-            // Condition check via buffer.readLine() method
-            // holding true upto that the while loop runs
             while ((str = buffer.readLine()) != null) {
-
                 builder.append(str).append("\n");
-                //System.out.println(str);
                 commandList.add(str);
-
             }
-            //System.out.println(builder.toString());
-            //   commandList.add(builder.toString());
-        }
-
-        // Catch block to handle the exceptions
-        catch (IOException e) {
-
-            // Print the line number here exception occurred
-            // using printStackTrace() method
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return commandList;
